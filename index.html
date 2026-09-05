@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10B981">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Trip Simulator by cito</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8FAFC;
+  --card: #FFFFFF;
+  --ink: #0F172A;
+  --muted: #64748B;
+  --muted-light: #94A3B8;
+  
+  --primary: #10B981;
+  --primary-dark: #059669;
+  --primary-wash: #ECFDF5;
+  --primary-border: #A7F3D0;
+  
+  --gold: #D97706;
+  --gold-wash: #FFFBEB;
+  
+  --rust: #EF4444;
+  --rust-wash: #FEF2F2;
+  
+  --border: #E2E8F0;
+  --border-focus: #10B981;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --radius: 14px;
+  --radius-sm: 10px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 16px 80px;
+}
+
+/* Header Modern */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0 24px;
+  padding: 16px 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  background: var(--primary-wash);
+  border: 1px solid var(--primary-border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-dark);
+  flex-shrink: 0;
+}
+
+.brand-text h1 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  margin: 0;
+  line-height: 1.2;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+}
+
+.brand-text h1 small {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--primary-dark);
+  background: var(--primary-wash);
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0;
+}
+
+.brand-text p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Cards & Layout */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin: 16px 0;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.card.result {
+  background: linear-gradient(135deg, #064E3B 0%, #065F46 100%);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: var(--shadow-lg);
+}
+
+.card.result .section-head i {
+  background: #34D399;
+}
+
+.card.result .section-head h2 {
+  color: #FFFFFF;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.section-head i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  flex: 0 0 auto;
+}
+
+.card.acc-gold .section-head i { background: var(--gold); }
+.card.acc-rust .section-head i { background: var(--rust); }
+.card.acc-quiet .section-head i { background: var(--muted-light); }
+
+h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12.5px;
+  margin: -10px 0 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.group-label {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  margin-bottom: -6px;
+}
+
+label {
+  font-size: 12px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+/* Input & Form Elements (Mobile Friendly Touch Targets) */
+input, select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 14px;
+  background: #FFFFFF;
+  color: var(--ink);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+input::placeholder {
+  color: var(--muted-light);
+}
+
+/* Tombol */
+button {
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-weight: 600;
+  font-family: inherit;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  user-select: none;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.primary {
+  background: var(--primary);
+  color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+}
+.primary:hover {
+  background: var(--primary-dark);
+}
+
+.secondary {
+  background: var(--primary-wash);
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-border);
+}
+.secondary:hover {
+  background: #D1FAE5;
+}
+
+.danger {
+  background: var(--rust-wash);
+  color: var(--rust);
+  border: 1px solid #FCA5A5;
+}
+.danger:hover {
+  background: #FEE2E2;
+}
+
+.btn-full {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* Rows Dinamis */
+.row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr auto;
+  gap: 10px;
+  margin: 10px 0;
+  align-items: end;
+  background: #F8FAFC;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.income-row {
+  grid-template-columns: 1.5fr 1fr auto;
+}
+
+/* Hasil & Statistik */
+.summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.hero-stat {
+  padding: 4px 0 8px;
+  text-align: left;
+}
+
+.hero-stat small {
+  color: #A7F3D0;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hero-stat b {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 32px;
+  line-height: 1.15;
+  margin-top: 2px;
+  letter-spacing: -0.5px;
+  color: #FFFFFF;
+}
+
+.hero-stat.loss b { color: #FCA5A5; }
+.hero-stat.profit b { color: #34D399; }
+
+.stat {
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+.stat b {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 17px;
+  margin-top: 2px;
+  color: #FFFFFF;
+}
+
+.stat small {
+  color: #94A3B8;
+  font-size: 11.5px;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.actions button {
+  width: 100%;
+}
+
+.actions button.danger {
+  grid-column: 1 / -1;
+}
+
+/* Tabel Responsif */
+.table-wrap {
+  overflow-x: auto;
+  margin: 0 -20px;
+  padding: 0 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+thead th {
+  border-bottom: 2px solid var(--border);
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 8px;
+}
+
+th, td {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+}
+
+th:first-child, td:first-child {
+  text-align: left;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.bprofit { background: var(--primary-wash); color: var(--primary-dark); }
+.bloss { background: var(--rust-wash); color: var(--rust); }
+.bbep { background: var(--gold-wash); color: var(--gold); }
+
+.e-cat-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.e-manual-wrap {
+  display: flex;
+  gap: 6px;
+}
+
+.e-manual-wrap input {
+  flex: 1;
+  min-width: 0;
+}
+
+.e-cat-back {
+  flex: 0 0 auto;
+  padding: 0 12px;
+}
+
+/* Penyesuaian Mobile Ekstrem (< 620px) */
+@media (max-width: 620px) {
+  .app {
+    padding: 10px 10px 60px;
+  }
+  
+  header {
+    padding: 12px 14px;
+    margin-bottom: 16px;
+  }
+  
+  .card {
+    padding: 14px;
+    margin: 12px 0;
+    border-radius: 12px;
+  }
+  
+  .grid, .summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .row, .income-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 10px;
+  }
+  
+  .row button, .income-row button {
+    width: 100%;
+    margin-top: 4px;
+  }
+  
+  .hero-stat b {
+    font-size: 26px;
+  }
+  
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<main class="app">
+
+<header>
+  <div class="brand">
+    <div class="brand-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <h1>Trip Simulator<small>cito</small></h1>
+      <p>Kalkulator finansial open trip cerdas</p>
+    </div>
+  </div>
+  <button class="secondary" id="installBtn" hidden>Install App</button>
+</header>
+
+<section class="card">
+  <div class="section-head"><i></i><h2>Simulasi Utama</h2></div>
+  <div class="grid">
+    <div class="full">
+      <label>Nama Simulasi / Event</label>
+      <input id="name" placeholder="Contoh: Open Trip Gunung Lawu">
+    </div>
+    <div class="group-label">Rentang Target Peserta</div>
+    <div>
+      <label>Peserta Minimal</label>
+      <input id="minP" type="number" min="0" value="1">
+    </div>
+    <div>
+      <label>Peserta Maksimal</label>
+      <input id="maxP" type="number" min="0" value="20">
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="section-head"><i></i><h2>Meeting Point &amp; Harga</h2></div>
+  <p class="hint">Atur titik kumpul, kuota peserta, dan tarif per orang.</p>
+  <div id="mpList"></div>
+  <button class="secondary btn-full" onclick="addMP()">+ Tambah Meeting Point</button>
+</section>
+
+<section class="card acc-gold">
+  <div class="section-head"><i></i><h2>Pemasukan Tambahan</h2></div>
+  <div id="incomeList"></div>
+  <button class="secondary btn-full" onclick="addIncome()">+ Tambah Pemasukan</button>
+</section>
+
+<section class="card acc-rust">
+  <div class="section-head"><i></i><h2>Pengeluaran / Biaya</h2></div>
+  <p class="hint">Pilih jenis alokasi: Kelompok, Per Peserta, atau Lain-lain.</p>
+  <div id="expenseList"></div>
+  <button class="secondary btn-full" onclick="addExpense()">+ Tambah Pengeluaran</button>
+</section>
+
+<section class="card result">
+  <div class="section-head"><i></i><h2>Ringkasan Hasil</h2></div>
+  <div class="hero-stat" id="resultBox">
+    <small>Estimasi Profit / Rugi</small>
+    <b id="sProfit">Rp0</b>
+  </div>
+  <div class="summary">
+    <div class="stat"><small>Total Peserta</small><b id="sParticipants">0</b></div>
+    <div class="stat"><small>Total Pemasukan</small><b id="sIncome">Rp0</b></div>
+    <div class="stat"><small>Total Pengeluaran</small><b id="sExpense">Rp0</b></div>
+    <div class="stat"><small>Profit per Orang</small><b id="sPerPerson">Rp0</b></div>
+    <div class="stat full" style="grid-column: 1 / -1;"><small>Margin Keuntungan</small><b id="sMargin">0%</b></div>
+  </div>
+</section>
+
+<section class="card acc-quiet">
+  <div class="section-head"><i></i><h2>Simulasi Skala Peserta</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Peserta</th>
+          <th>Pemasukan</th>
+          <th>Pengeluaran</th>
+          <th>Hasil Bersih</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="simulation"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card acc-quiet">
+  <div class="actions">
+    <button class="primary" onclick="saveData()">Simpan Data</button>
+    <button class="secondary" onclick="loadData()">Muat Data</button>
+    <button class="danger" onclick="resetAll()">Reset Semua</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Math.round(n||0));
+function num(v){return Math.max(0,Number(v)||0)}
+
+const EXPENSE_CATEGORIES=['Simaksi','Ojek','Sewa Kendaraan','Driver','BBM','Tol','Parkir','Logistik','Porter Lokal','Sewa Alat','Homestay/Penginapan','Dana Darurat'];
+
+function addMP(data={name:'',participants:0,price:0}){
+  const d=document.createElement('div');
+  d.className='row';
+  d.innerHTML=`
+    <div><label>Nama Lokasi</label><input class="mp-name" placeholder="cth: Stasiun Gambir" value="${data.name}"></div>
+    <div><label>Jumlah</label><input class="mp-participants" type="number" min="0" placeholder="Org" value="${data.participants}"></div>
+    <div><label>Harga/Org</label><input class="mp-price" type="number" min="0" placeholder="Rp" value="${data.price}"></div>
+    <button class="danger" onclick="this.parentElement.remove();calc()" style="height:44px;margin-top:auto;">Hapus</button>
+  `;
+  $('mpList').appendChild(d);
+  d.querySelectorAll('input').forEach(x=>x.addEventListener('input',calc));
+}
+
+function addIncome(data={name:'',amount:0}){
+  const d=document.createElement('div');
+  d.className='row income-row';
+  d.innerHTML=`
+    <div><label>Sumber Pemasukan</label><input class="i-name" placeholder="cth: Sponsor / Merchandise" value="${data.name}"></div>
+    <div><label>Nominal Total</label><input class="i-amount" type="number" min="0" placeholder="Rp" value="${data.amount}"></div>
+    <button class="danger" onclick="this.parentElement.remove();calc()" style="height:44px;margin-top:auto;">Hapus</button>
+  `;
+  $('incomeList').appendChild(d);
+  d.querySelectorAll('input').forEach(x=>x.addEventListener('input',calc));
+}
+
+function expenseName(row){
+  const cat=row.querySelector('.e-cat').value;
+  return cat==='__manual__'?row.querySelector('.e-name-manual').value:cat;
+}
+
+function addExpense(data={name:'',type:'fixed',amount:0}){
+  const d=document.createElement('div');
+  d.className='row';
+  const isCustom=data.name&&!EXPENSE_CATEGORIES.includes(data.name);
+  d.innerHTML=`
+    <div class="e-cat-wrap">
+      <label>Kategori Biaya</label>
+      <select class="e-cat" style="display:${isCustom?'none':'block'}">${EXPENSE_CATEGORIES.map(c=>`<option value="${c}">${c}</option>`).join('')}<option value="__manual__">Manual (ketik sendiri)</option></select>
+      <div class="e-manual-wrap" style="display:${isCustom?'flex':'none'}">
+        <input class="e-name-manual" placeholder="Nama pengeluaran" value="${isCustom?data.name:''}">
+        <button type="button" class="secondary e-cat-back" title="Pilih dari daftar">↺</button>
+      </div>
+    </div>
+    <div>
+      <label>Tipe Biaya</label>
+      <select class="e-type">
+        <option value="fixed">Kelompok</option>
+        <option value="per">Per Peserta</option>
+        <option value="manual">Lain-lain</option>
+      </select>
+    </div>
+    <div>
+      <label>Nominal</label>
+      <input class="e-amount" type="number" min="0" placeholder="Rp" value="${data.amount}">
+    </div>
+    <button class="danger" onclick="this.parentElement.remove();calc()" style="height:44px;margin-top:auto;">Hapus</button>
+  `;
+  
+  const catSel=d.querySelector('.e-cat'),manualWrap=d.querySelector('.e-manual-wrap'),manualInp=d.querySelector('.e-name-manual'),backBtn=d.querySelector('.e-cat-back');
+  catSel.value=isCustom?'__manual__':(EXPENSE_CATEGORIES.includes(data.name)?data.name:EXPENSE_CATEGORIES[0]);
+  d.querySelector('.e-type').value=data.type;
+  
+  catSel.addEventListener('change',()=>{if(catSel.value==='__manual__'){catSel.style.display='none';manualWrap.style.display='flex';manualInp.focus()}calc()});
+  backBtn.addEventListener('click',()=>{manualWrap.style.display='none';catSel.style.display='block';catSel.value=EXPENSE_CATEGORIES[0];manualInp.value='';calc()});
+  
+  $('expenseList').appendChild(d);
+  d.querySelectorAll('input,select').forEach(x=>x.addEventListener('input',calc));
+}
+
+function values(){
+  const mp=[...document.querySelectorAll('#mpList>div')].map(r=>({participants:num(r.querySelector('.mp-participants').value),price:num(r.querySelector('.mp-price').value)}));
+  const p=mp.reduce((a,x)=>a+x.participants,0);
+  const mpIncome=mp.reduce((a,x)=>a+x.participants*x.price,0);
+  const avgPrice=p?mpIncome/p:0;
+  return {
+    p,mpIncome,avgPrice,
+    min:num($('minP').value),
+    max:num($('maxP').value),
+    income:[...document.querySelectorAll('#incomeList>div')].map(r=>({amount:num(r.querySelector('.i-amount').value)})),
+    expense:[...document.querySelectorAll('#expenseList>div')].map(r=>({type:r.querySelector('.e-type').value,amount:num(r.querySelector('.e-amount').value)}))
+  };
+}
+
+function compute(p,v){
+  let base=p===v.p?v.mpIncome:p*v.avgPrice;
+  let income=base+v.income.reduce((a,x)=>a+x.amount,0);
+  let expense=v.expense.reduce((a,x)=>a+x.amount*(x.type==='per'?p:1),0);
+  return {income,expense,profit:income-expense};
+}
+
+function calc(){
+  let v=values(),r=compute(v.p,v);
+  $('sParticipants').textContent=v.p+' Orang';
+  $('sIncome').textContent=fmt(r.income);
+  $('sExpense').textContent=fmt(r.expense);
+  $('sProfit').textContent=(r.profit<0?'-':'')+fmt(Math.abs(r.profit));
+  $('sPerPerson').textContent=fmt(v.p?r.profit/v.p:0);
+  $('sMargin').textContent=(r.income?r.profit/r.income*100:0).toFixed(2)+'%';
+  $('resultBox').className='hero-stat '+(r.profit>=0?'profit':'loss');
+  
+  let body='';
+  let a=Math.min(v.min,v.max),b=Math.max(v.min,v.max);
+  for(let p=a;p<=b;p++){
+    let x=compute(p,v),status=x.profit>0?'<span class="badge bprofit">PROFIT</span>':x.profit<0?'<span class="badge bloss">RUGI</span>':'<span class="badge bbep">BEP</span>';
+    body+=`<tr><td><b>${p} Org</b></td><td>${fmt(x.income)}</td><td>${fmt(x.expense)}</td><td><b>${x.profit<0?'-':''}${fmt(Math.abs(x.profit))}</b></td><td>${status}</td></tr>`;
+  }
+  $('simulation').innerHTML=body;
+}
+
+function saveData(){
+  let data={
+    name:$('name').value,minP:$('minP').value,maxP:$('maxP').value,
+    mp:[...document.querySelectorAll('#mpList>div')].map(r=>({name:r.querySelector('.mp-name').value,participants:r.querySelector('.mp-participants').value,price:r.querySelector('.mp-price').value})),
+    income:[...document.querySelectorAll('#incomeList>div')].map(r=>({name:r.querySelector('.i-name').value,amount:r.querySelector('.i-amount').value})),
+    expense:[...document.querySelectorAll('#expenseList>div')].map(r=>({name:expenseName(r),type:r.querySelector('.e-type').value,amount:r.querySelector('.e-amount').value}))
+  };
+  localStorage.setItem('openTripSimulator',JSON.stringify(data));
+  alert('Data berhasil disimpan ke perangkat.');
+}
+
+function loadData(){
+  let d=JSON.parse(localStorage.getItem('openTripSimulator')||'null');
+  if(!d)return alert('Belum ada data tersimpan.');
+  ['name','minP','maxP'].forEach(k=>$(k).value=d[k]??'');
+  $('mpList').innerHTML='';$('incomeList').innerHTML='';$('expenseList').innerHTML='';
+  (d.mp||[]).forEach(addMP);
+  (d.income||[]).forEach(addIncome);
+  (d.expense||[]).forEach(addExpense);
+  if(!(d.mp&&d.mp.length))addMP();
+  calc();
+}
+
+function resetAll(){
+  if(confirm('Reset semua data simulator?')){
+    localStorage.removeItem('openTripSimulator');
+    location.reload();
+  }
+}
+
+document.querySelectorAll('#name,#minP,#maxP').forEach(x=>x.addEventListener('input',calc));
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('installBtn').hidden=false});
+$('installBtn').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('installBtn').hidden=true}};
+
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+
+addMP({name:'Meeting Point Utama',participants:10,price:500000});
+addIncome();
+addExpense();
+calc();
+</script>
+</body>
+</html>
