@@ -289,6 +289,27 @@ button:active {
   margin-top: 8px;
 }
 
+.btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin-top: 4px;
+  font-size: 20px;
+  line-height: 1;
+  border-radius: 50%;
+}
+
+.row-remove {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  align-self: end;
+}
+
 /* Rows Dinamis */
 .row {
   display: grid;
@@ -420,26 +441,84 @@ th:first-child, td:first-child {
 .bloss { background: var(--rust-wash); color: var(--rust); }
 .bbep { background: var(--gold-wash); color: var(--gold); }
 
-.e-cat-wrap {
+/* Mini Summary Bar */
+.mini-summary {
+  background: linear-gradient(135deg, #064E3B 0%, #065F46 100%);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin: 12px 0 16px;
+  box-shadow: var(--shadow-md);
+  color: #FFFFFF;
+}
+
+.mini-summary-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.mini-summary-main small {
+  color: #A7F3D0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.mini-summary-main b {
+  font-family: 'Outfit', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #FFFFFF;
+}
+
+.mini-summary.loss .mini-summary-main b { color: #FCA5A5; }
+.mini-summary.profit .mini-summary-main b { color: #34D399; }
+
+.mini-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+
+.mini-summary-grid div {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  width: 100%;
+  gap: 2px;
 }
 
-.e-manual-wrap {
-  display: flex;
-  gap: 6px;
+.mini-summary-grid small {
+  font-size: 10px;
+  color: #94A3B8;
+  white-space: nowrap;
 }
 
-.e-manual-wrap input {
-  flex: 1;
-  min-width: 0;
+.mini-summary-grid b {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.e-cat-back {
-  flex: 0 0 auto;
-  padding: 0 12px;
+@media (max-width: 400px) {
+  .mini-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.sticky-summary {
+  position: sticky;
+  top: 8px;
+  z-index: 5;
+  margin: 12px 0 16px;
 }
 
 /* Penyesuaian Mobile Ekstrem (< 620px) */
@@ -455,7 +534,7 @@ th:first-child, td:first-child {
   
   .card {
     padding: 14px;
-    margin: 12px 0;
+    margin: 10px 0;
     border-radius: 12px;
   }
   
@@ -463,15 +542,37 @@ th:first-child, td:first-child {
     grid-template-columns: 1fr;
   }
   
-  .row, .income-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
+  .row {
+    grid-template-columns: 1.2fr 0.8fr 0.9fr auto;
+    gap: 6px;
     padding: 10px;
+    align-items: end;
   }
-  
-  .row button, .income-row button {
-    width: 100%;
-    margin-top: 4px;
+
+  .income-row {
+    grid-template-columns: 1.6fr 1fr auto;
+    gap: 6px;
+    padding: 10px;
+    align-items: end;
+  }
+
+  .row label, .income-row label {
+    font-size: 10.5px;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .row input, .income-row input, .row select, .income-row select {
+    padding: 8px 8px;
+    font-size: 12.5px;
+  }
+
+  .row-remove {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
   }
   
   .hero-stat b {
@@ -503,6 +604,19 @@ th:first-child, td:first-child {
   <button class="secondary" id="installBtn" hidden>Install App</button>
 </header>
 
+<section class="mini-summary sticky-summary">
+  <div class="mini-summary-main">
+    <small>Estimasi Profit / Rugi</small>
+    <b id="sProfit">Rp0</b>
+  </div>
+  <div class="mini-summary-grid">
+    <div><small>Peserta</small><b id="sParticipants">0</b></div>
+    <div><small>Margin</small><b id="sMargin">0%</b></div>
+    <div><small>Pemasukan</small><b id="sIncome">Rp0</b></div>
+    <div><small>Pengeluaran</small><b id="sExpense">Rp0</b></div>
+  </div>
+</section>
+
 <section class="card">
   <div class="section-head"><i></i><h2>Simulasi Utama</h2></div>
   <div class="grid">
@@ -526,35 +640,20 @@ th:first-child, td:first-child {
   <div class="section-head"><i></i><h2>Meeting Point &amp; Harga</h2></div>
   <p class="hint">Atur titik kumpul, kuota peserta, dan tarif per orang.</p>
   <div id="mpList"></div>
-  <button class="secondary btn-full" onclick="addMP()">+ Tambah Meeting Point</button>
+  <button class="secondary btn-icon" onclick="addMP()" aria-label="Tambah Meeting Point" title="Tambah Meeting Point">+</button>
 </section>
 
 <section class="card acc-gold">
   <div class="section-head"><i></i><h2>Pemasukan Tambahan</h2></div>
   <div id="incomeList"></div>
-  <button class="secondary btn-full" onclick="addIncome()">+ Tambah Pemasukan</button>
+  <button class="secondary btn-icon" onclick="addIncome()" aria-label="Tambah Pemasukan" title="Tambah Pemasukan">+</button>
 </section>
 
 <section class="card acc-rust">
   <div class="section-head"><i></i><h2>Pengeluaran / Biaya</h2></div>
   <p class="hint">Pilih jenis alokasi: Kelompok, Per Peserta, atau Lain-lain.</p>
   <div id="expenseList"></div>
-  <button class="secondary btn-full" onclick="addExpense()">+ Tambah Pengeluaran</button>
-</section>
-
-<section class="card result">
-  <div class="section-head"><i></i><h2>Ringkasan Hasil</h2></div>
-  <div class="hero-stat" id="resultBox">
-    <small>Estimasi Profit / Rugi</small>
-    <b id="sProfit">Rp0</b>
-  </div>
-  <div class="summary">
-    <div class="stat"><small>Total Peserta</small><b id="sParticipants">0</b></div>
-    <div class="stat"><small>Total Pemasukan</small><b id="sIncome">Rp0</b></div>
-    <div class="stat"><small>Total Pengeluaran</small><b id="sExpense">Rp0</b></div>
-    <div class="stat"><small>Profit per Orang</small><b id="sPerPerson">Rp0</b></div>
-    <div class="stat full" style="grid-column: 1 / -1;"><small>Margin Keuntungan</small><b id="sMargin">0%</b></div>
-  </div>
+  <button class="secondary btn-icon" onclick="addExpense()" aria-label="Tambah Pengeluaran" title="Tambah Pengeluaran">+</button>
 </section>
 
 <section class="card acc-quiet">
@@ -592,6 +691,8 @@ function num(v){return Math.max(0,Number(v)||0)}
 
 const EXPENSE_CATEGORIES=['Simaksi','Ojek','Sewa Kendaraan','Driver','BBM','Tol','Parkir','Logistik','Porter Lokal','Sewa Alat','Homestay/Penginapan','Dana Darurat'];
 
+document.body.insertAdjacentHTML('beforeend','<datalist id="expenseCatList">'+EXPENSE_CATEGORIES.map(c=>`<option value="${c}">`).join('')+'</datalist>');
+
 function addMP(data={name:'',participants:0,price:0}){
   const d=document.createElement('div');
   d.className='row';
@@ -599,7 +700,7 @@ function addMP(data={name:'',participants:0,price:0}){
     <div><label>Nama Lokasi</label><input class="mp-name" placeholder="cth: Stasiun Gambir" value="${data.name}"></div>
     <div><label>Jumlah</label><input class="mp-participants" type="number" min="0" placeholder="Org" value="${data.participants}"></div>
     <div><label>Harga/Org</label><input class="mp-price" type="number" min="0" placeholder="Rp" value="${data.price}"></div>
-    <button class="danger" onclick="this.parentElement.remove();calc()" style="height:44px;margin-top:auto;">Hapus</button>
+    <button class="danger row-remove" onclick="this.parentElement.remove();calc()" aria-label="Hapus" title="Hapus">&times;</button>
   `;
   $('mpList').appendChild(d);
   d.querySelectorAll('input').forEach(x=>x.addEventListener('input',calc));
@@ -611,30 +712,17 @@ function addIncome(data={name:'',amount:0}){
   d.innerHTML=`
     <div><label>Sumber Pemasukan</label><input class="i-name" placeholder="cth: Sponsor / Merchandise" value="${data.name}"></div>
     <div><label>Nominal Total</label><input class="i-amount" type="number" min="0" placeholder="Rp" value="${data.amount}"></div>
-    <button class="danger" onclick="this.parentElement.remove();calc()" style="height:44px;margin-top:auto;">Hapus</button>
+    <button class="danger row-remove" onclick="this.parentElement.remove();calc()" aria-label="Hapus" title="Hapus">&times;</button>
   `;
   $('incomeList').appendChild(d);
   d.querySelectorAll('input').forEach(x=>x.addEventListener('input',calc));
 }
 
-function expenseName(row){
-  const cat=row.querySelector('.e-cat').value;
-  return cat==='__manual__'?row.querySelector('.e-name-manual').value:cat;
-}
-
 function addExpense(data={name:'',type:'fixed',amount:0}){
   const d=document.createElement('div');
   d.className='row';
-  const isCustom=data.name&&!EXPENSE_CATEGORIES.includes(data.name);
   d.innerHTML=`
-    <div class="e-cat-wrap">
-      <label>Kategori Biaya</label>
-      <select class="e-cat" style="display:${isCustom?'none':'block'}">${EXPENSE_CATEGORIES.map(c=>`<option value="${c}">${c}</option>`).join('')}<option value="__manual__">Manual (ketik sendiri)</option></select>
-      <div class="e-manual-wrap" style="display:${isCustom?'flex':'none'}">
-        <input class="e-name-manual" placeholder="Nama pengeluaran" value="${isCustom?data.name:''}">
-        <button type="button" class="secondary e-cat-back" title="Pilih dari daftar">↺</button>
-      </div>
-    </div>
+    <div><label>Kategori Biaya</label><input class="e-name" list="expenseCatList" placeholder="Pilih atau ketik sendiri" value="${data.name}"></div>
     <div>
       <label>Tipe Biaya</label>
       <select class="e-type">
@@ -647,16 +735,11 @@ function addExpense(data={name:'',type:'fixed',amount:0}){
       <label>Nominal</label>
       <input class="e-amount" type="number" min="0" placeholder="Rp" value="${data.amount}">
     </div>
-    <button class="danger" onclick="this.parentElement.remove();calc()" style="height:44px;margin-top:auto;">Hapus</button>
+    <button class="danger row-remove" onclick="this.parentElement.remove();calc()" aria-label="Hapus" title="Hapus">&times;</button>
   `;
-  
-  const catSel=d.querySelector('.e-cat'),manualWrap=d.querySelector('.e-manual-wrap'),manualInp=d.querySelector('.e-name-manual'),backBtn=d.querySelector('.e-cat-back');
-  catSel.value=isCustom?'__manual__':(EXPENSE_CATEGORIES.includes(data.name)?data.name:EXPENSE_CATEGORIES[0]);
+
   d.querySelector('.e-type').value=data.type;
-  
-  catSel.addEventListener('change',()=>{if(catSel.value==='__manual__'){catSel.style.display='none';manualWrap.style.display='flex';manualInp.focus()}calc()});
-  backBtn.addEventListener('click',()=>{manualWrap.style.display='none';catSel.style.display='block';catSel.value=EXPENSE_CATEGORIES[0];manualInp.value='';calc()});
-  
+
   $('expenseList').appendChild(d);
   d.querySelectorAll('input,select').forEach(x=>x.addEventListener('input',calc));
 }
@@ -688,9 +771,8 @@ function calc(){
   $('sIncome').textContent=fmt(r.income);
   $('sExpense').textContent=fmt(r.expense);
   $('sProfit').textContent=(r.profit<0?'-':'')+fmt(Math.abs(r.profit));
-  $('sPerPerson').textContent=fmt(v.p?r.profit/v.p:0);
   $('sMargin').textContent=(r.income?r.profit/r.income*100:0).toFixed(2)+'%';
-  $('resultBox').className='hero-stat '+(r.profit>=0?'profit':'loss');
+  document.querySelector('.mini-summary').className='mini-summary sticky-summary '+(r.profit>=0?'profit':'loss');
   
   let body='';
   let a=Math.min(v.min,v.max),b=Math.max(v.min,v.max);
@@ -706,7 +788,7 @@ function saveData(){
     name:$('name').value,minP:$('minP').value,maxP:$('maxP').value,
     mp:[...document.querySelectorAll('#mpList>div')].map(r=>({name:r.querySelector('.mp-name').value,participants:r.querySelector('.mp-participants').value,price:r.querySelector('.mp-price').value})),
     income:[...document.querySelectorAll('#incomeList>div')].map(r=>({name:r.querySelector('.i-name').value,amount:r.querySelector('.i-amount').value})),
-    expense:[...document.querySelectorAll('#expenseList>div')].map(r=>({name:expenseName(r),type:r.querySelector('.e-type').value,amount:r.querySelector('.e-amount').value}))
+    expense:[...document.querySelectorAll('#expenseList>div')].map(r=>({name:r.querySelector('.e-name').value,type:r.querySelector('.e-type').value,amount:r.querySelector('.e-amount').value}))
   };
   localStorage.setItem('openTripSimulator',JSON.stringify(data));
   alert('Data berhasil disimpan ke perangkat.');
