@@ -299,32 +299,46 @@ button:active {
   border-radius: 50%;
 }
 
-.row-remove {
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  font-size: 18px;
-  line-height: 1;
-  border-radius: 50%;
-  flex: 0 0 auto;
-  align-self: end;
-}
-
 /* Rows Dinamis */
 .row {
+  position: relative;
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr auto;
+  grid-template-columns: 1.4fr 1fr 1fr;
   gap: 10px;
-  margin: 10px 0;
+  margin: 18px 0;
   align-items: end;
   background: #F8FAFC;
-  padding: 12px;
+  padding: 16px 40px 16px 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
 }
 
 .income-row {
-  grid-template-columns: 1.5fr 1fr auto;
+  grid-template-columns: 1.5fr 1fr;
+}
+
+/* Tombol hapus: ikon bulat mengambang di pojok, tidak ikut memakan kolom grid */
+.row-remove {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 15px;
+  line-height: 1;
+  border-radius: 50%;
+  background: #FFFFFF;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  flex: 0 0 auto;
+}
+
+.row-remove:hover {
+  background: var(--rust-wash);
+  color: var(--rust);
+  border-color: #FCA5A5;
 }
 
 /* Hasil & Statistik */
@@ -383,17 +397,13 @@ button:active {
 }
 
 .actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
 .actions button {
   width: 100%;
-}
-
-.actions button.danger {
-  grid-column: 1 / -1;
 }
 
 /* Tabel Responsif */
@@ -542,22 +552,29 @@ th:first-child, td:first-child {
     grid-template-columns: 1fr;
   }
   
+  /* Baris: field nama dibuat full-width, field angka disusun 2 kolom di bawahnya.
+     Tombol hapus mengambang di pojok, tidak lagi ikut jadi kolom ke-4 yang sempit. */
   .row {
-    grid-template-columns: 1.2fr 0.8fr 0.9fr auto;
-    gap: 6px;
-    padding: 10px;
-    align-items: end;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 14px 34px 12px 12px;
+    margin: 20px 0;
+  }
+
+  .row > div:first-child {
+    grid-column: 1 / -1;
   }
 
   .income-row {
-    grid-template-columns: 1.6fr 1fr auto;
-    gap: 6px;
-    padding: 10px;
-    align-items: end;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .income-row > div:first-child {
+    grid-column: 1 / -1;
   }
 
   .row label, .income-row label {
-    font-size: 10.5px;
+    font-size: 11px;
     margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
@@ -565,22 +582,115 @@ th:first-child, td:first-child {
   }
 
   .row input, .income-row input, .row select, .income-row select {
-    padding: 8px 8px;
-    font-size: 12.5px;
+    padding: 10px 10px;
+    font-size: 13px;
   }
 
   .row-remove {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
+    width: 26px;
+    height: 26px;
+    font-size: 14px;
+    top: -8px;
+    right: -8px;
   }
   
   .hero-stat b {
     font-size: 26px;
   }
-  
-  .actions {
-    grid-template-columns: 1fr;
+}
+
+/* ===== Export PDF (print) ===== */
+#printArea { display: none; }
+
+.pdf-header {
+  background: linear-gradient(135deg, #064E3B 0%, #059669 100%);
+  color: #fff;
+  padding: 28px 36px 24px;
+}
+.pdf-brand {
+  font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+  color: #A7F3D0; font-weight: 700; margin-bottom: 12px;
+}
+.pdf-header h1 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+.pdf-meta { margin-top: 6px; font-size: 11.5px; color: #D1FAE5; }
+.pdf-meta span { margin-right: 16px; }
+
+.pdf-summary-strip {
+  display: flex;
+  margin: -18px 36px 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(6,95,70,0.18);
+  overflow: hidden;
+  position: relative;
+}
+.pdf-summary-strip .cell { flex: 1; padding: 14px 16px; border-right: 1px solid #E2E8F0; }
+.pdf-summary-strip .cell:last-child { border-right: none; }
+.pdf-summary-strip .cell small {
+  display: block; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: #64748B; font-weight: 700; margin-bottom: 4px;
+}
+.pdf-summary-strip .cell b { font-size: 16px; font-weight: 800; color: #0F172A; }
+.pdf-summary-strip .cell.profit b { color: #059669; }
+.pdf-summary-strip .cell.loss b { color: #DC2626; }
+
+.pdf-content { padding: 32px 36px 0; }
+
+.pdf-section-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 800; color: #0F172A;
+  margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.4px;
+}
+.pdf-section-title .dot { width: 7px; height: 7px; border-radius: 50%; background: #10B981; }
+.pdf-section-title.gold .dot { background: #D97706; }
+.pdf-section-title.rust .dot { background: #EF4444; }
+
+table.pdf-detail { width: 100%; border-collapse: collapse; margin-bottom: 26px; font-size: 11.5px; }
+table.pdf-detail th {
+  text-align: left; background: #F0FDF9; color: #059669;
+  padding: 8px 10px; font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.4px; font-weight: 800; border-bottom: 2px solid #A7F3D0;
+}
+table.pdf-detail td { padding: 9px 10px; border-bottom: 1px solid #EEF2F6; color: #334155; }
+table.pdf-detail tr:last-child td { border-bottom: none; }
+table.pdf-detail td.num, table.pdf-detail th.num { text-align: right; }
+table.pdf-detail tr.total td {
+  font-weight: 800; color: #0F172A; background: #F8FAFC; border-top: 2px solid #E2E8F0;
+}
+
+table.pdf-sim { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 8px; }
+table.pdf-sim th {
+  background: #0F172A; color: #fff; padding: 8px 9px; text-align: right;
+  font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.3px;
+}
+table.pdf-sim th:first-child, table.pdf-sim td:first-child { text-align: left; }
+table.pdf-sim td { padding: 7px 9px; text-align: right; border-bottom: 1px solid #EEF2F6; }
+table.pdf-sim tr:nth-child(even) td { background: #F8FAFC; }
+table.pdf-sim tr.current td { background: #ECFDF5 !important; font-weight: 800; }
+
+.badge { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 9px; font-weight: 800; letter-spacing: 0.3px; }
+.b-profit { background: #ECFDF5; color: #059669; }
+.b-loss { background: #FEF2F2; color: #DC2626; }
+.b-bep { background: #FFFBEB; color: #B45309; }
+
+.pdf-note {
+  background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 10px;
+  padding: 12px 14px; font-size: 10.5px; color: #64748B; margin-top: 4px;
+}
+
+.pdf-footer {
+  margin: 22px 36px 0; padding: 12px 0 24px; border-top: 1px solid #E2E8F0;
+  display: flex; justify-content: space-between; font-size: 9.5px; color: #94A3B8;
+}
+
+@media print {
+  body * { visibility: hidden; }
+  #printArea, #printArea * { visibility: visible; }
+  #printArea {
+    display: block;
+    position: absolute;
+    left: 0; top: 0; width: 100%;
+    background: #fff;
   }
 }
 </style>
@@ -631,7 +741,7 @@ th:first-child, td:first-child {
     </div>
     <div>
       <label>Peserta Maksimal</label>
-      <input id="maxP" type="number" min="0" value="20">
+      <input id="maxP" type="number" min="0" value="10">
     </div>
   </div>
 </section>
@@ -676,18 +786,48 @@ th:first-child, td:first-child {
 
 <section class="card acc-quiet">
   <div class="actions">
-    <button class="primary" onclick="saveData()">Simpan Data</button>
-    <button class="secondary" onclick="loadData()">Muat Data</button>
+    <button class="primary" onclick="exportPDF()">📄 Export PDF</button>
     <button class="danger" onclick="resetAll()">Reset Semua</button>
   </div>
 </section>
 
+
+<div id="printArea"></div>
 </main>
 
 <script>
 const $=id=>document.getElementById(id);
 const fmt=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Math.round(n||0));
-function num(v){return Math.max(0,Number(v)||0)}
+function num(v){
+  if(typeof v==='string') v=v.replace(/[^0-9]/g,'');
+  return Math.max(0,Number(v)||0);
+}
+function formatMoney(n){
+  n=Math.max(0,Math.round(Number(n)||0));
+  return 'Rp '+n.toLocaleString('id-ID');
+}
+
+/* Format input uang secara live sambil mengetik (Rp 1.000.000) */
+function bindMoneyInput(el){
+  const apply=()=>{
+    const n=num(el.value);
+    el.value=n?formatMoney(n):'';
+    fitMoneyFont(el);
+  };
+  el.addEventListener('input',apply);
+  fitMoneyFont(el);
+}
+
+/* Perkecil ukuran font otomatis kalau teks tidak muat di kolom */
+function fitMoneyFont(el){
+  const max=14,min=10;
+  el.style.fontSize=max+'px';
+  let size=max;
+  while(el.scrollWidth>el.clientWidth && size>min){
+    size-=1;
+    el.style.fontSize=size+'px';
+  }
+}
 
 const EXPENSE_CATEGORIES=['Simaksi','Ojek','Sewa Kendaraan','Driver','BBM','Tol','Parkir','Logistik','Porter Lokal','Sewa Alat','Homestay/Penginapan','Dana Darurat'];
 
@@ -697,12 +837,13 @@ function addMP(data={name:'',participants:0,price:0}){
   const d=document.createElement('div');
   d.className='row';
   d.innerHTML=`
-    <div><label>Nama Lokasi</label><input class="mp-name" placeholder="cth: Stasiun Gambir" value="${data.name}"></div>
+    <div><label>Nama Lokasi</label><input class="mp-name" placeholder="cth: Madiun" value="${data.name}"></div>
     <div><label>Jumlah</label><input class="mp-participants" type="number" min="0" placeholder="Org" value="${data.participants}"></div>
-    <div><label>Harga/Org</label><input class="mp-price" type="number" min="0" placeholder="Rp" value="${data.price}"></div>
+    <div><label>Harga/Org</label><input class="mp-price money" inputmode="numeric" placeholder="Rp 0" value="${data.price?formatMoney(data.price):''}"></div>
     <button class="danger row-remove" onclick="this.parentElement.remove();calc()" aria-label="Hapus" title="Hapus">&times;</button>
   `;
   $('mpList').appendChild(d);
+  bindMoneyInput(d.querySelector('.mp-price'));
   d.querySelectorAll('input').forEach(x=>x.addEventListener('input',calc));
 }
 
@@ -711,10 +852,11 @@ function addIncome(data={name:'',amount:0}){
   d.className='row income-row';
   d.innerHTML=`
     <div><label>Sumber Pemasukan</label><input class="i-name" placeholder="cth: Sponsor / Merchandise" value="${data.name}"></div>
-    <div><label>Nominal Total</label><input class="i-amount" type="number" min="0" placeholder="Rp" value="${data.amount}"></div>
+    <div><label>Nominal Total</label><input class="i-amount money" inputmode="numeric" placeholder="Rp 0" value="${data.amount?formatMoney(data.amount):''}"></div>
     <button class="danger row-remove" onclick="this.parentElement.remove();calc()" aria-label="Hapus" title="Hapus">&times;</button>
   `;
   $('incomeList').appendChild(d);
+  bindMoneyInput(d.querySelector('.i-amount'));
   d.querySelectorAll('input').forEach(x=>x.addEventListener('input',calc));
 }
 
@@ -733,7 +875,7 @@ function addExpense(data={name:'',type:'fixed',amount:0}){
     </div>
     <div>
       <label>Nominal</label>
-      <input class="e-amount" type="number" min="0" placeholder="Rp" value="${data.amount}">
+      <input class="e-amount money" inputmode="numeric" placeholder="Rp 0" value="${data.amount?formatMoney(data.amount):''}">
     </div>
     <button class="danger row-remove" onclick="this.parentElement.remove();calc()" aria-label="Hapus" title="Hapus">&times;</button>
   `;
@@ -741,6 +883,7 @@ function addExpense(data={name:'',type:'fixed',amount:0}){
   d.querySelector('.e-type').value=data.type;
 
   $('expenseList').appendChild(d);
+  bindMoneyInput(d.querySelector('.e-amount'));
   d.querySelectorAll('input,select').forEach(x=>x.addEventListener('input',calc));
 }
 
@@ -783,34 +926,117 @@ function calc(){
   $('simulation').innerHTML=body;
 }
 
-function saveData(){
-  let data={
-    name:$('name').value,minP:$('minP').value,maxP:$('maxP').value,
-    mp:[...document.querySelectorAll('#mpList>div')].map(r=>({name:r.querySelector('.mp-name').value,participants:r.querySelector('.mp-participants').value,price:r.querySelector('.mp-price').value})),
-    income:[...document.querySelectorAll('#incomeList>div')].map(r=>({name:r.querySelector('.i-name').value,amount:r.querySelector('.i-amount').value})),
-    expense:[...document.querySelectorAll('#expenseList>div')].map(r=>({name:r.querySelector('.e-name').value,type:r.querySelector('.e-type').value,amount:r.querySelector('.e-amount').value}))
-  };
-  localStorage.setItem('openTripSimulator',JSON.stringify(data));
-  alert('Data berhasil disimpan ke perangkat.');
-}
-
-function loadData(){
-  let d=JSON.parse(localStorage.getItem('openTripSimulator')||'null');
-  if(!d)return alert('Belum ada data tersimpan.');
-  ['name','minP','maxP'].forEach(k=>$(k).value=d[k]??'');
-  $('mpList').innerHTML='';$('incomeList').innerHTML='';$('expenseList').innerHTML='';
-  (d.mp||[]).forEach(addMP);
-  (d.income||[]).forEach(addIncome);
-  (d.expense||[]).forEach(addExpense);
-  if(!(d.mp&&d.mp.length))addMP();
-  calc();
-}
-
 function resetAll(){
   if(confirm('Reset semua data simulator?')){
-    localStorage.removeItem('openTripSimulator');
     location.reload();
   }
+}
+
+/* ===== Export PDF (rincian) ===== */
+function badgeHTML(profit){
+  if(profit>0) return '<span class="badge b-profit">PROFIT</span>';
+  if(profit<0) return '<span class="badge b-loss">RUGI</span>';
+  return '<span class="badge b-bep">BEP</span>';
+}
+
+function exportPDF(){
+  const v=values();
+  const r=compute(v.p,v);
+  const eventName=$('name').value.trim()||'Simulasi Open Trip';
+  const today=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+
+  const mpRows=[...document.querySelectorAll('#mpList>div')].map(row=>{
+    const name=row.querySelector('.mp-name').value.trim()||'Meeting Point';
+    const participants=num(row.querySelector('.mp-participants').value);
+    const price=num(row.querySelector('.mp-price').value);
+    return {name,participants,price,subtotal:participants*price};
+  }).filter(x=>x.participants>0);
+  const mpTotal=mpRows.reduce((a,x)=>a+x.subtotal,0);
+
+  const incomeRows=[...document.querySelectorAll('#incomeList>div')].map(row=>{
+    const name=row.querySelector('.i-name').value.trim()||'Pemasukan Lain';
+    const amount=num(row.querySelector('.i-amount').value);
+    return {name,amount};
+  }).filter(x=>x.amount>0);
+  const incomeTotal=incomeRows.reduce((a,x)=>a+x.amount,0);
+
+  const typeLabel={fixed:'Kelompok',per:'Per Peserta',manual:'Lain-lain'};
+  const expenseRows=[...document.querySelectorAll('#expenseList>div')].map(row=>{
+    const name=row.querySelector('.e-name').value.trim()||'Biaya Lain';
+    const type=row.querySelector('.e-type').value;
+    const amount=num(row.querySelector('.e-amount').value);
+    const total=amount*(type==='per'?v.p:1);
+    return {name,type,amount,total};
+  }).filter(x=>x.amount>0);
+  const expenseTotal=expenseRows.reduce((a,x)=>a+x.total,0);
+
+  let a=Math.min(v.min,v.max),b=Math.max(v.min,v.max);
+  let simRows='';
+  for(let p=a;p<=b;p++){
+    const x=compute(p,v);
+    const currentClass=(p===v.p)?' class="current"':'';
+    simRows+=`<tr${currentClass}><td>${p} Org</td><td>${fmt(x.income)}</td><td>${fmt(x.expense)}</td><td>${x.profit<0?'-':''}${fmt(Math.abs(x.profit))}</td><td>${badgeHTML(x.profit)}</td></tr>`;
+  }
+
+  const html=`
+    <div class="pdf-header">
+      <div class="pdf-brand">🏔 Trip Simulator by cito</div>
+      <h1>${eventName} — Rincian Simulasi</h1>
+      <div class="pdf-meta"><span>Dibuat: ${today}</span><span>Rentang peserta: ${a} – ${b} orang</span></div>
+    </div>
+
+    <div class="pdf-summary-strip">
+      <div class="cell ${r.profit>=0?'profit':'loss'}"><small>Estimasi ${r.profit>=0?'Profit':'Rugi'}</small><b>${fmt(Math.abs(r.profit))}</b></div>
+      <div class="cell"><small>Margin</small><b>${(r.income?r.profit/r.income*100:0).toFixed(1)}%</b></div>
+      <div class="cell"><small>Pemasukan</small><b>${fmt(r.income)}</b></div>
+      <div class="cell"><small>Pengeluaran</small><b>${fmt(r.expense)}</b></div>
+    </div>
+
+    <div class="pdf-content">
+      <div class="pdf-section-title"><span class="dot"></span>Meeting Point &amp; Harga</div>
+      <table class="pdf-detail">
+        <thead><tr><th>Lokasi</th><th class="num">Peserta</th><th class="num">Harga/Org</th><th class="num">Subtotal</th></tr></thead>
+        <tbody>
+          ${mpRows.map(x=>`<tr><td>${x.name}</td><td class="num">${x.participants}</td><td class="num">${fmt(x.price)}</td><td class="num">${fmt(x.subtotal)}</td></tr>`).join('')}
+          <tr class="total"><td colspan="3">Total Pemasukan Tiket (${v.p} org)</td><td class="num">${fmt(mpTotal)}</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pdf-section-title gold"><span class="dot"></span>Pemasukan Tambahan</div>
+      <table class="pdf-detail">
+        <thead><tr><th>Sumber</th><th class="num">Nominal</th></tr></thead>
+        <tbody>
+          ${incomeRows.length?incomeRows.map(x=>`<tr><td>${x.name}</td><td class="num">${fmt(x.amount)}</td></tr>`).join(''):'<tr><td colspan="2">Tidak ada pemasukan tambahan</td></tr>'}
+          <tr class="total"><td>Total Pemasukan Tambahan</td><td class="num">${fmt(incomeTotal)}</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pdf-section-title rust"><span class="dot"></span>Pengeluaran / Biaya</div>
+      <table class="pdf-detail">
+        <thead><tr><th>Kategori</th><th class="num">Tipe</th><th class="num">Nominal</th></tr></thead>
+        <tbody>
+          ${expenseRows.length?expenseRows.map(x=>`<tr><td>${x.name}</td><td class="num">${typeLabel[x.type]||x.type}</td><td class="num">${fmt(x.total)}</td></tr>`).join(''):'<tr><td colspan="3">Tidak ada pengeluaran</td></tr>'}
+          <tr class="total"><td colspan="2">Total Pengeluaran (${v.p} org)</td><td class="num">${fmt(expenseTotal)}</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pdf-section-title"><span class="dot"></span>Simulasi Skala Peserta</div>
+      <table class="pdf-sim">
+        <thead><tr><th>Peserta</th><th>Pemasukan</th><th>Pengeluaran</th><th>Hasil Bersih</th><th>Status</th></tr></thead>
+        <tbody>${simRows}</tbody>
+      </table>
+      <div class="pdf-note">Baris disorot menunjukkan skenario dengan jumlah peserta saat ini (${v.p} orang).</div>
+    </div>
+
+    <div class="pdf-footer">
+      <span>Trip Simulator by cito · Dokumen ini dibuat otomatis</span>
+      <span>${today}</span>
+    </div>
+  `;
+
+  $('printArea').innerHTML=html;
+  document.title=eventName+' - Rincian Simulasi';
+  window.print();
 }
 
 document.querySelectorAll('#name,#minP,#maxP').forEach(x=>x.addEventListener('input',calc));
@@ -821,7 +1047,7 @@ $('installBtn').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();awa
 
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 
-addMP({name:'Meeting Point Utama',participants:10,price:500000});
+addMP();
 addIncome();
 addExpense();
 calc();
