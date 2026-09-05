@@ -1,4 +1,4 @@
-const CACHE_NAME = 'trip-simulator-cito-v3';
+const CACHE_NAME = 'trip-simulator-cito-v4';
 const ASSETS = [
   './',
   './index.html',
